@@ -10,6 +10,10 @@ public class DeckController : MonoBehaviour
 	[SerializeField]
 	private HandController _handController;
 
+	public GameObject deckCardPrefab;
+
+
+
 	/// <summary>
 	/// Initialize this instance.
 	/// </summary>
@@ -17,5 +21,8 @@ public class DeckController : MonoBehaviour
 	{
 		//手札の初期化
 		_handController.Initialize ();	
+
+		GameObject setUp = Instantiate (deckCardPrefab)as GameObject;
+		setUp.transform.position = new Vector3 (-5, 0, -3);
 	}
 }
