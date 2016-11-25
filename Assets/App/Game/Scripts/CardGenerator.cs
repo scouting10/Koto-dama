@@ -20,6 +20,12 @@ public class CardGenerator : MonoBehaviour {
 	private float deckPos_x = -5f;
 	private float deckPos_z = -3f;
 
+	//合成時に使うカードID格納変数
+	public string handCardId_a;
+	public string handCardId_b;
+	public string comCardId = ComCard(a,b) ;
+
+
 	// Use this for initialization
 	void Start () {
 
@@ -45,11 +51,23 @@ public class CardGenerator : MonoBehaviour {
 
 		// HandCardControllerから呼ばれる、合成時にカード作る関数
 		// _cardRawDataJsonの中に、id組み合わせのデータが必要。
-		Fusion(id a, id b){
-			
-			
-		}
-	
+		if(comCard==true /*合成時、CardController側でここをtrueに*/){
+			ComCard (handCardId_a, handCardId_b);
+			GameObject comCard = Instantiate (handCardPrefab) as GameObject;
+			// ↓ここで
+
+			// ↑comCardId のデータを持たせる。
+			comCard.transform.position = new Vector3(0,0,0/*合成語の空きスペースにカード配置*/);
+		}	
 	}
+
+	public string ComCard (string a, string b){
+		string c = "a+bの組み合わせから、MasterDataManagerから合成後のId引っ張ってくる。";
+		return c; //コンビネーションidを返す
+
+	}
+
+	
+
 
 }
