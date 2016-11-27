@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CardGenerator : MonoBehaviour {
-	/*
+	
 	// Prefabの設定
 	public GameObject deckCardPrefab;
 	public GameObject handCardPrefab;
@@ -26,11 +26,11 @@ public class CardGenerator : MonoBehaviour {
 	public string handCardId_b;
 	public string comCardId;
 	public string a, b;
-	*/
+
 
 	// Use this for initialization
 	void Start () {
-		/*
+		
 		// HandCard配置
 		for (int i = -5; i < -2; i++) {
 			GameObject fstdraw = Instantiate (handCardPrefab)as GameObject;
@@ -46,8 +46,8 @@ public class CardGenerator : MonoBehaviour {
 
 		//comCardIdの初期化
 		//comCardId=ComCard(string a,string b);
-		*/
-		Debug.Log (MasterDataManager.Instance.wordMasterData._wordRawDataList [0]);
+
+		Debug.Log (MasterDataManager.Instance.wordMasterData._wordRawDataList[0]);
 	
 	}
 

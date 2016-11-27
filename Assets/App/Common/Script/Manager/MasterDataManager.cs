@@ -20,15 +20,17 @@ public class MasterDataManager : SingletonMonoBehaviour<MasterDataManager>
 
 	public WordMasterData wordMasterData{
 		get{
-			return _wordMasterData;
+			return this._wordMasterData;
 		}
 	}
 
+	override protected void OnAwake() {
+		DontDestroyOnLoad (gameObject);
+		Initialize();
+	}
 
-	/*public class Item2{
-		public string derivative4;
-	}*/
 
+	/*  singletonmonobehaviorでは、↑を使った方が良いらしい。
 	/// <summary>
 	/// Awake関数(Start関数の前に呼ばれるUnity側で用意された関数)
 	/// </summary>
@@ -38,6 +40,7 @@ public class MasterDataManager : SingletonMonoBehaviour<MasterDataManager>
 		//シーンが変わると、全て変数がリセット的扱いを受ける。
 		DontDestroyOnLoad (gameObject);
 	}
+	*/
 
 	/// <summary>
 	/// 初期化処理を行う関数 
@@ -49,18 +52,5 @@ public class MasterDataManager : SingletonMonoBehaviour<MasterDataManager>
 		_combinationMasterData = JsonUtility.FromJson<CombinationMasterData> (_combinationMasterJson.text);
 
 
-
-
-		//Debug.Log (this.Instance.wordMasterData._wordRawDataList [0]);
-
-
-		/*for (int i = 0; i < _wordMasterData._wordRawDataList.Count; i++) {
-			Debug.Log (_wordMasterData._wordRawDataList.id[i]);
-		}*/
-
-
-		///string itemJson="{\"derivative4\" : \"answer\"}";
-		///Item2 item2 = JsonUtility.FromJson<Item2> (itemJson);
-		///Debug.Log (item2.derivative4);
 	}
 }
