@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CardGenerator : MonoBehaviour {
-
+	/*
 	// Prefabの設定
 	public GameObject deckCardPrefab;
 	public GameObject handCardPrefab;
@@ -20,15 +20,17 @@ public class CardGenerator : MonoBehaviour {
 	private float deckPos_x = -5f;
 	private float deckPos_z = -3f;
 
-	//合成時に使うカードID格納変数
+	//合成時に使う変数
+	public bool withCard = false;
 	public string handCardId_a;
 	public string handCardId_b;
-	public string comCardId = ComCard(a,b) ;
-
+	public string comCardId;
+	public string a, b;
+	*/
 
 	// Use this for initialization
 	void Start () {
-
+		/*
 		// HandCard配置
 		for (int i = -5; i < -2; i++) {
 			GameObject fstdraw = Instantiate (handCardPrefab)as GameObject;
@@ -38,34 +40,42 @@ public class CardGenerator : MonoBehaviour {
 			fstdraw.transform.position = new Vector3 (i, 0, handPos_z);
 		}
 
-		// DeacCard配置
+		// DeckCard配置
 		GameObject deckSet = Instantiate (deckCardPrefab)as GameObject;
 		deckSet.transform.position = new Vector3 (deckPos_x, 0, deckPos_z);
+
+		//comCardIdの初期化
+		//comCardId=ComCard(string a,string b);
+		*/
+		Debug.Log (MasterDataManager.Instance.wordMasterData._wordRawDataList [0]);
 	
 	}
-	
+
+	/*
 	// Update is called once per frame
 	void Update () {
 
 		// HandCardが減ったのを検出して、カードを送る。
 
+
 		// HandCardControllerから呼ばれる、合成時にカード作る関数
 		// _cardRawDataJsonの中に、id組み合わせのデータが必要。
-		if(comCard==true /*合成時、CardController側でここをtrueに*/){
+		if(withCard==true ){ //合成時、CardController側でここをtrueに
 			ComCard (handCardId_a, handCardId_b);
 			GameObject comCard = Instantiate (handCardPrefab) as GameObject;
 			// ↓ここで
 
 			// ↑comCardId のデータを持たせる。
-			comCard.transform.position = new Vector3(0,0,0/*合成語の空きスペースにカード配置*/);
+			comCard.transform.position = new Vector3(0,0,0);//合成語の空きスペースにカード配置
+			comCardStat = false;
 		}	
 	}
 
 	public string ComCard (string a, string b){
-		string c = "a+bの組み合わせから、MasterDataManagerから合成後のId引っ張ってくる。";
+		string c = a+b+"の組み合わせから、MasterDataManagerから合成後のId引っ張ってくる。";
 		return c; //コンビネーションidを返す
 
-	}
+	}*/
 
 	
 

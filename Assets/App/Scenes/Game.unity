@@ -265,8 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _handController: {fileID: 1569023126}
-  deckCardPrefab: {fileID: 1000011510381882, guid: ac96a5bdb54a648fdaf8649c782d5426,
-    type: 2}
+  deckCardPrefab: {fileID: 0, guid: ac96a5bdb54a648fdaf8649c782d5426, type: 2}
 --- !u!1 &1258985766
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,10 +306,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44c667b0bc868433d8114447e6b2d09a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckCardPrefab: {fileID: 1000011510381882, guid: ac96a5bdb54a648fdaf8649c782d5426,
-    type: 2}
-  handCardPrefab: {fileID: 1000014173247566, guid: fad21ee6821b54f1283d42ba7f174269,
-    type: 2}
+  deckCardPrefab: {fileID: 0, guid: ac96a5bdb54a648fdaf8649c782d5426, type: 2}
+  handCardPrefab: {fileID: 0, guid: fad21ee6821b54f1283d42ba7f174269, type: 2}
 --- !u!1 &1569023124
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,8 +349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _deckController: {fileID: 885926325}
-  handCardPrefab: {fileID: 1000014173247566, guid: fad21ee6821b54f1283d42ba7f174269,
-    type: 2}
+  handCardPrefab: {fileID: 0, guid: fad21ee6821b54f1283d42ba7f174269, type: 2}
 --- !u!1 &1743072998
 GameObject:
   m_ObjectHideFlags: 0

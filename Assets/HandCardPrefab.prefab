@@ -20,8 +20,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000010718021760}
   - 33: {fileID: 33000011998056874}
-  - 64: {fileID: 64000012772017172}
   - 23: {fileID: 23000014043716128}
+  - 65: {fileID: 65000011567761704}
   m_Layer: 0
   m_Name: HandCardPrefab
   m_TagString: Untagged
@@ -78,15 +78,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000014173247566}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!64 &64000012772017172
-MeshCollider:
+--- !u!65 &65000011567761704
+BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000014173247566}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Convex: 0
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  m_Size: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+  m_Center: {x: 0, y: 0, z: 0}
