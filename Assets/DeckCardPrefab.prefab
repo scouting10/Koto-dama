@@ -24,7 +24,7 @@ GameObject:
   - 23: {fileID: 23000010500042352}
   m_Layer: 0
   m_Name: DeckCardPrefab
-  m_TagString: Untagged
+  m_TagString: DeckCard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
