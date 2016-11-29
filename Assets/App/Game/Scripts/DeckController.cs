@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// デッキのコントローラークラス
@@ -8,16 +9,15 @@ using System.Collections;
 public class DeckController : MonoBehaviour
 {
 	[SerializeField]
-	private HandController _handController;
+	private HandCardsController _handCardsController;
 
 
 	// Prefabの設定
 	public GameObject deckCardPrefab;
 	public GameObject handCardPrefab;
 
-	/// masterdatamanagerのスクリプトをここに埋め込む？
-	/// public MasterDataManager _masterDataManager;
-	/// 
+	// データ格納してるMasterDataManagerへのアクセス
+	List<WordRawData> list;
 
 	// HandCardの位置
 	private float handPos_x;
@@ -36,13 +36,18 @@ public class DeckController : MonoBehaviour
 	public void Initialize ()
 	{
 		
+		_handCardsController.Initialize ();
+		list = MasterDataManager.Instance.wordMasterData._wordRawDataList;
 
 		// HandCard配置
-		for (int i = -5; i < -2; i++) {
+		for (int i = -5; i < 5; i++) {
 			GameObject firstDraw = Instantiate (handCardPrefab)as GameObject;
-			// ↓多分ここにランダムにmasterdatamanagerからの
-
-			// ↑カード情報をもらうコードが必要
+			HandController _handController = firstDraw.GetComponent<HandController> ();
+			//int a = Random.Range (0, list.Count); 
+				// ↑本当はこれだけど、肝心の歯抜けなので保留。
+			int a=Random.Range(0,20);
+			// カード情報をもらうdataはHandController内で定義済み
+			_handController.data = list[a]; 
 			firstDraw.transform.position = new Vector3 (i, 0, handPos_z);
 		}
 
@@ -53,12 +58,7 @@ public class DeckController : MonoBehaviour
 		//comCardIdの初期化
 		//comCardId=ComCard(string a,string b);
 
-		Debug.Log (MasterDataManager.Instance.wordMasterData._wordRawDataList[0].id);
-
-
-		// 手札の初期化　　　↓　これって、それぞれのPrefabできちんと仕事すんの？
-		// 下で新しいカードを生み出すたびに、Initialize()は必要。現在未実装
-		_handController.Initialize ();	
+		Debug.Log (list.Count.ToString());
 
 
 
@@ -80,7 +80,8 @@ public class DeckController : MonoBehaviour
 	public void ComCard (string a, string b, Vector3 c){
 		GameObject newCard = Instantiate (handCardPrefab) as GameObject;
 		newCard.transform.position = c;
-		Initialize ();
+		Debug.Log("ComCard");
+
 		// "a+b+の組み合わせから、MasterDataManagerから合成後のId引っ張ってくる。";
 		// newCard.GetComponent<"HandController">().id = ???
 	}

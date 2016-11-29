@@ -7,17 +7,14 @@ using System.Collections;
 /// </summary>
 public class HandController : MonoBehaviour
 {
-	[SerializeField]
-	private	DeckController _deckController;
-		// ↑んー？これ今のままじゃ使えんな。
+	
 
 	// Deckcontrollerからもらうカードデータ
-	public string id;
+	public WordRawData data;
 		// など、など
 
 	// 元に戻る用、次の配置用の、カード初期位置の保存
-	private Vector3 startPos = new Vector3();
-
+	private Vector3 startPos;
 
 
 	// OnTriggerでの判定
@@ -27,30 +24,23 @@ public class HandController : MonoBehaviour
 	private bool withObject = false;
 
 	// カード合成時
-		// OnTriggerからUpdateに渡される、「相手カード」のid
+	// OnTriggerからUpdateに渡される、「相手カード」のidと、Destroy用に格納するotherのGameObject
 	private string handCardId_b;
-		//DeckControllerの合成関数ComCard()を呼ぶためのDeckController変数
+	private GameObject otherCard;
+	// DeckControllerの合成関数ComCard()を呼ぶためのDeckController変数
 	private DeckController deckController;
-		/*↑こんなんせんでも、せっかくSerializeで設定した変数があった。
-			↑現状使えない。高取先生に質問。*/
+		
 
 
-	/// <summary>
-	/// Initialize this instance.
-	/// </summary>
-	public void Initialize ()
+	void Start ()
 	{
 		//初期データを格納
 		startPos = this.transform.position;
-		//id = もらえるカードid
-
 		//カードアタッチ時（to カード、フィールド、オブジェクト）に使用
 		deckController = GameObject.Find ("DeckController").GetComponent<DeckController>();
-			/*↑こんなんせんでも、Serializeで_deckControllerが設定されてる。
-			_deckController使った瞬間、下のComCard()とかの赤字が一瞬で黒字化した。
-				↑現状使えない。高取先生に質問。*/
 
-		
+		Debug.Log (data.id);
+		Debug.Log (data.word);
 	}
 
 
@@ -86,15 +76,15 @@ public class HandController : MonoBehaviour
 		// 何かと重なってるか否かは、下記のOnTriggerEnter,OnTriggerExitでwith「何か」として検出。
 		if (Input.GetMouseButtonUp (0)) {
 			if (withCard) {
-				string handCardId_a = this.id;
+				string handCardId_a = this.data.id;
 				deckController.ComCard(handCardId_a, handCardId_b, startPos);
 				Debug.Log ("withCard");
 				// withなんたらを初期化する。
-				withCard = false;		
+				Destroy (otherCard);
 				Destroy (this.gameObject);
 
 			} else if (withDeck) {
-				string handCardId_a = this.id;
+				string handCardId_a = this.data.id;
 				deckController.ComDeck(handCardId_a, startPos);
 				withDeck = false;		
 				Destroy (this.gameObject);
@@ -106,7 +96,6 @@ public class HandController : MonoBehaviour
 
 			} else if (withObject) {
 				deckController.ComObject(startPos);
-				withObject = false;		
 				Destroy (this.gameObject);
 			
 			} else {
@@ -118,40 +107,33 @@ public class HandController : MonoBehaviour
 		}
 	}
 
-	// ↓保留。最終的にこの形で同じ（バグった）挙動する。
-	void OnMouseDrag(){
-		/*
+	void OnMouseDrag ()
+	{
 		Vector3 objectPointInScreen
-		= Camera.main.WorldToScreenPoint(this.transform.position);
-		*/
-		// mousePositionは、Screen座標系
-		Vector3 mousePointInScreen = Input.mousePosition;
-		/* ↑のように、まとめてはいけないのか？
-		= new Vector3(Input.mousePosition.x,
-			// この処理で、動く予定のないy座標はobjectとmouseで合わせてしまう。
-			objectPointInScreen.y,
-			Input.mousePosition.z);
-		*/
+		= Camera.main.WorldToScreenPoint (this.transform.position);
 
-		// y座標の処理を終えたmousePointInScreenを、World座標に戻し、objectのtransform(World座標）に代入。
-		Vector3 mousePointInWorld = Camera.main.ScreenToWorldPoint(mousePointInScreen);
-		mousePointInWorld.y = this.transform.position.y;
+		//スクリーン座標は、GameViewでのXY軸と考えてみると、ここでｙを動かしてｚを固定する理由がわかる。
+		Vector3 mousePointInScreen
+		= new Vector3 (Input.mousePosition.x,
+			Input.mousePosition.y,
+			objectPointInScreen.z);
+
+		Vector3 mousePointInWorld = Camera.main.ScreenToWorldPoint (mousePointInScreen);
 		this.transform.position = mousePointInWorld;
-	
 
 	}
-		
-
 	
-	/*
+
 	void OnTriggerEnter(Collider other){
 		// ドラッグを離した時、HandCardと重なっていたら、
 		// withCard = trueを返す。それによって、Update()からcardgenerator内の合成関数走らせる。
 		if (other.gameObject.tag == "HandCard") {
-				withCard = true;
+			withCard = true;
 			// Update()内のComCard()の引数。相手カードのidを取得する。
-				handCardId_b = this.id;
-				Destroy(other.gameObject);
+			handCardId_b = this.data.id;
+			otherCard = other.gameObject;
+			Debug.Log (withCard.ToString());
+				
 
 		//その他の条件も記述
 		} else if (other.gameObject.tag == "Field") {
@@ -168,6 +150,8 @@ public class HandController : MonoBehaviour
 		// 対象から外れた時、withなんたらをfalseに戻す。
 		if(other.gameObject.tag=="HandCard"){
 			withCard = false;
+			Debug.Log (withCard.ToString());
+
 		//その他の条件も記述
 		}else if(other.gameObject.tag == "Field"){
 			withField = false;
@@ -180,5 +164,5 @@ public class HandController : MonoBehaviour
 
 
 	}
-	*/
+
 }
