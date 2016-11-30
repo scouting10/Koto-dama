@@ -18,9 +18,16 @@ public class MasterDataManager : SingletonMonoBehaviour<MasterDataManager>
 	[SerializeField]
 	private CombinationMasterData _combinationMasterData;
 
+	// Initialize()内の_wordMasterDataは、private変数を保存しているので、getにて回収する。
 	public WordMasterData wordMasterData{
 		get{
 			return this._wordMasterData;
+		}
+	}
+	// 同上
+	public CombinationMasterData combinationMasterData{
+		get{
+			return this._combinationMasterData;
 		}
 	}
 
