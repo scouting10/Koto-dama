@@ -17,7 +17,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
 
 	// 元に戻る用、次の配置用の、カード初期位置の保存
-	private Vector3 startPos;
+	private Vector2 startPos;
 
 
 	// OnTriggerでの判定
@@ -30,8 +30,8 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	// OnTriggerからUpdateに渡される、「相手カード」のidと、Destroy用に格納するotherのGameObject
 	private string handCardId_b;
 	private GameObject otherCard;
-	// HandCardsDirectorの合成関数ComCard()を呼ぶためのDeckController変数
-	private HandCardsDirector _handCardsDirector;
+	// HandDirectorの合成関数ComCard()を呼ぶためのDeckController変数
+	private HandDirector _handDirector;
 
 	// デッキへカードアタッチ時に使う
 	private DeckController _deckController;
@@ -44,7 +44,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
 		//カードアタッチ時（to カード、フィールド、オブジェクト）に使用
 			//この辺、もうインスペクタでやっちゃってもいいのかな、、、？
-		_handCardsDirector = GameObject.Find ("HandCardsDirector").GetComponent<HandCardsDirector>();
+		_handDirector = GameObject.Find ("HandDirector").GetComponent<HandDirector>();
 		_deckController = GameObject.Find ("DeckController").GetComponent<DeckController> ();
 
 	}
@@ -86,8 +86,8 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 			if (withCard) {
 				// まず、関数の引数になるこのカードidを変数に格納
 				string handCardId_a = this.word_data.id;
-				// HandCardsDirector内のComCard()をint型の関数にしてやることで、返り値から条件判定ができる。
-				int comCard = _handCardsDirector.ComCard(handCardId_a, handCardId_b, startPos);
+				// HandDirector内のComCard()をint型の関数にしてやることで、返り値から条件判定ができる。
+				int comCard = _handDirector.ComCard(handCardId_a, handCardId_b, startPos);
 				if (comCard == -1) {
 					Destroy (otherCard);
 					Destroy (this.gameObject);
@@ -99,7 +99,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 			} else if (withDeck) {
 				string handCardId_a = this.word_data.id;
 				// このカードは最終的にDestroyされるので、新しいカード要求。新規カードの中身は（今の所）ランダムで良い。だから、引数はstartPosのみ。
-				_handCardsDirector.ComDeck(startPos);
+				_handDirector.ComDeck(startPos);
 				// 内容未定だが、実際にDeckとの合成で起きることは、DeckController内に記述。
 				_deckController.ComDeck(handCardId_a);
 
@@ -107,12 +107,12 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 				Destroy (this.gameObject);
 
 			} else if (withField) {
-				_handCardsDirector.ComField(startPos);
+				_handDirector.ComField(startPos);
 				//withField = false;		
 				Destroy (this.gameObject);
 
 			} else if (withObject) {
-				_handCardsDirector.ComObject(startPos);
+				_handDirector.ComObject(startPos);
 				Destroy (this.gameObject);
 			
 			} else {
@@ -149,13 +149,12 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 			// Update()内のComCard()の引数。相手カードのidを取得する。
 			handCardId_b = this.word_data.id;
 			otherCard = other.gameObject;
-			Debug.Log (withCard.ToString());
 				
 
 		//その他の条件も記述
 		} else if (other.gameObject.tag == "Field") {
 			withField = true;
-		} else if (other.gameObject.tag == "Deck") {
+		} else if (other.gameObject.tag == "DeckCard") {
 			withDeck = true;
 		} else if (other.gameObject.tag == "Obj") {
 			withObject = true;
@@ -167,12 +166,11 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 		// 対象から外れた時、withなんたらをfalseに戻す。
 		if(other.gameObject.tag=="HandCard"){
 			withCard = false;
-			Debug.Log (withCard.ToString());
 
 		//その他の条件も記述
 		}else if(other.gameObject.tag == "Field"){
 			withField = false;
-		}else if(other.gameObject.tag == "Deck"){
+		}else if(other.gameObject.tag == "DeckCard"){
 			withDeck = false;
 		}else if(other.gameObject.tag == "Obj"){
 			withObject = false;

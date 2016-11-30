@@ -8,7 +8,7 @@ using System.Collections;
 public class DeckController : MonoBehaviour
 {
 	[SerializeField]
-	private HandCardsDirector _handCardsDirector;
+	private HandDirector _handDirector;
 	[SerializeField]
 	private CardGenerator _cardGenerator;
 
@@ -28,7 +28,7 @@ public class DeckController : MonoBehaviour
 		DeckController firstDeck = _cardGenerator.DeckCreate();
 		firstDeck.transform.position = new Vector3 (deckPos_x, 0, deckPos_z);
 
-		_handCardsDirector.Initialize ();
+		_handDirector.Initialize ();
 
 	}
 

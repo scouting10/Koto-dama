@@ -8,6 +8,9 @@ public class GameRootController : MonoBehaviour
 {
 	[SerializeField]
 	private CardGenerator _cardGenerator;
+	[SerializeField]
+	private DeckController _deckController;
+
 
 	// Use this for initialization
 	private void Start ()
@@ -16,5 +19,7 @@ public class GameRootController : MonoBehaviour
 		MasterDataManager.Instance.Initialize ();
 		//デッキの初期化
 		_cardGenerator.Initialize ();
+		_deckController.Initialize();
+
 	}
 }

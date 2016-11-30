@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class CardGenerator : MonoBehaviour {
-	
+
+	// Canvasオブジェクトの取得
+	public GameObject canvasObject;
+
 	// Prefabの設定
 	public HandController _handController;
 	public DeckController _deckController;
@@ -18,7 +21,7 @@ public class CardGenerator : MonoBehaviour {
 		wordlist = MasterDataManager.Instance.wordMasterData._wordRawDataList;
 		comlist = MasterDataManager.Instance.combinationMasterData._combinationRawDataList;
 
-		_deckController.Initialize ();
+
 
 	}
 
@@ -31,6 +34,8 @@ public class CardGenerator : MonoBehaviour {
 	public HandController Create(int index){
 		// カード生成
 		HandController hand = Instantiate (_handController); 
+		//Canvasの子要素として登録する.第一引数が親要素、第二引数が親の座標をもらうか
+		hand.transform.SetParent (canvasObject.transform);
 		// データの設定
 		hand.word_data = wordlist[index];
 		// インスタンスを返す
@@ -39,9 +44,8 @@ public class CardGenerator : MonoBehaviour {
 	}
 
 	public DeckController DeckCreate(){
-		// カード生成
-		DeckController deck = Instantiate (_deckController); 
-		// データの設定
+		DeckController deck = Instantiate (_deckController);
+		deck.transform.SetParent (canvasObject.transform, false);
 		return deck;
 
 	}
@@ -50,11 +54,14 @@ public class CardGenerator : MonoBehaviour {
 		for (int i = 0; i < comlist.Count; i++) {
 			if (comlist [i].mean == id_a && comlist [i].mean == id_b) { // ここ、コンパイル通すために作ったが、本来は mean ではダメ。
 				HandController combination = Instantiate (_handController);
+				combination.transform.SetParent (canvasObject.transform, false);
 				combination.com_data = comlist [i];
 				return combination;
 			} 
 		}
-		return new HandController() ;
+		HandController misComCard = Instantiate(_handController);
+		Debug.Log ("misComCard");
+		return misComCard;
 	}
 }
 

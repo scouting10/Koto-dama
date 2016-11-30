@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class HandCardsDirector: MonoBehaviour {
+public class HandDirector: MonoBehaviour {
 
 
 	[SerializeField]
@@ -12,8 +12,8 @@ public class HandCardsDirector: MonoBehaviour {
 
 
 	// HandCardの位置
-	private float handPos_x;
-	private float handPos_z = 3f;
+	private float handPos_x = 190;
+	private float handPos_y = -90;
 
 	// カードデータがきちんと完成したら、これを使う。
 	//List<WordRawData> list = MasterDataManager.Instance.wordMasterData._wordRawDataList;
@@ -28,13 +28,13 @@ public class HandCardsDirector: MonoBehaviour {
 	{
 		
 		// 最初のHandCard配置
-		for (int i = -5; i < 5; i++) {
+		for (int i = 0; i < 5; i++) {
 			//int a = Random.Range (0, list.Count); 
 			// データ完成後はこちら。今は歯抜けなので↓
 			int a = Random.Range (0, 20);
 
 			HandController firstDraw = _cardGenerator.Create (a);
-			firstDraw.transform.position = new Vector3 (i, 0, handPos_z);
+			firstDraw.gameObject.transform.localPosition = new Vector3 (handPos_x+100*i, handPos_y,0);
 		}
 
 
