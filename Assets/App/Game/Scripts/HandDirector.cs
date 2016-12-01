@@ -34,7 +34,20 @@ public class HandDirector: MonoBehaviour {
 			int a = Random.Range (0, 20);
 
 			HandController firstDraw = _cardGenerator.Create (a);
-			firstDraw.gameObject.transform.localPosition = new Vector3 (handPos_x+100*i, handPos_y,0);
+			// ↓実は、.で上流に遡れる！　そして、また降りてこれる！ これもOK → firstDraw.gameObject.transform.gameObject.GetComponent<RectTransform> ();
+			RectTransform rect = firstDraw.gameObject.GetComponent<RectTransform> ();
+			rect.anchoredPosition = new Vector2 (handPos_x+100*i, handPos_y);
+			/* 
+			↓の書き方では、だめ。
+			Vector2 rect = firstDraw.gameObject.GetComponent<RectTransform> ().anchoredPosition;
+			rect = new Vector2 (handPos_x+100*i, handPos_y);
+			どうやらここまでやると、Vector2の値だけ、魚拓みたいにとるらしい。途中の流れは保存されない。
+
+			これも、だめ。
+			firstDraw.transform.position = new Vector2 (handPos_x+100*i, handPos_y);
+			*/
+
+
 		}
 
 

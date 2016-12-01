@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// デッキのコントローラークラス
 /// デッキに含まれるカードのリストを保持したり、手札(HandController）にカードを提供する役目を担う 
 /// </summary>
-public class DeckController : MonoBehaviour
+public class DeckController : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField]
 	private HandDirector _handDirector;
@@ -13,8 +14,8 @@ public class DeckController : MonoBehaviour
 	private CardGenerator _cardGenerator;
 
 	// DeckCardの位置
-	private float deckPos_x = -5f;
-	private float deckPos_z = -3f;
+	private float deckPos_x = 90;
+	private float deckPos_y = -90;
 
 
 
@@ -26,7 +27,8 @@ public class DeckController : MonoBehaviour
 		
 		// DeckCard配置
 		DeckController firstDeck = _cardGenerator.DeckCreate();
-		firstDeck.transform.position = new Vector3 (deckPos_x, 0, deckPos_z);
+		RectTransform deckPos= firstDeck.gameObject.GetComponent<RectTransform>();
+		deckPos.anchoredPosition = new Vector2 (deckPos_x,deckPos_y);
 
 		_handDirector.Initialize ();
 
@@ -43,6 +45,21 @@ public class DeckController : MonoBehaviour
 	// 内容未定。カードとDeckのアタッチ時に、HandControllerから呼ばれる。
 	public void ComDeck(string a){
 	
+	}
+
+	// 手札をマウスオーバーされた時に、HandControllerにDeckCardの情報を送る。
+	public void OnPointerEnter(PointerEventData eventData)
+	{
+
+	}
+
+	public void OnPointerExit(PointerEventData eventData)
+	{
+
+	}
+	public void OnDrop(PointerEventData eventData)
+	{
+
 	}
 
 
