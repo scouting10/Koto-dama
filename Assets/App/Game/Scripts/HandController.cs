@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 /// <summary>
 /// 手札のコントローラークラス 
@@ -14,6 +15,10 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	// CardGeneratorからもらうカードデータ。合成カードのリストはCombinationRawData型なので、別の変数com_dataとして区別必要だった。
 	public WordRawData word_data;
 	public CombinationRawData com_data;
+	// HandDirectorの合成関数ComCard()を呼ぶためのDeckController変数
+	public HandDirector _handDirector;
+	// デッキへカードアタッチ時に使う
+	public DeckController _deckController;
 
 	/*
 	// 自分のRectTransformへのパス,初期位置情報を格納
@@ -23,7 +28,10 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	*/
 
 	// ↑なんかうまくいかんかったから普通でやったらできた。しかし、HandDirectorの初期カード配置では、Rectをいじらないとどうしようもなかったが？？？
-	private Vector3 startPos;
+	public Vector3 startPos;
+
+	// タグとは異なる、HandDirectorのhandList内での自分の番号
+	public int number;
 
 	// OnDrag周りの判定
 	// 重なってる何かをboolで。
@@ -38,15 +46,16 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	// OnTriggerからUpdateに渡される、「相手カード」のidと、Destroy用に格納するotherのGameObject
 	private string handCardId_b;
 
-	// HandDirectorの合成関数ComCard()を呼ぶためのDeckController変数
-	private HandDirector _handDirector;
 
-	// デッキへカードアタッチ時に使う
-	private DeckController _deckController;
+
+
 
 
 	void Start ()
 	{
+		_handDirector = GameObject.Find ("HandDirector").GetComponent<HandDirector> ();
+		_deckController = GameObject.Find ("DeckController").GetComponent<DeckController> ();
+
 		/*
 		// 初期位置データを格納
 		firstRect=GetComponent<RectTransform>();
@@ -57,12 +66,6 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
 		//上で失敗。最初に戻す。
 		startPos = transform.position;
-
-
-		//カードアタッチ時（to カード、フィールド、オブジェクト）に使用
-			//この辺、もうインスペクタでやっちゃってもいいのかな、、、？
-		_handDirector = GameObject.Find ("HandDirector").GetComponent<HandDirector>();
-		_deckController = GameObject.Find ("DeckController").GetComponent<DeckController> ();
 
 	}
 
@@ -161,7 +164,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 		this.transform.position = mousePointInWorld;
 
 	}
-	そこで、つかうのがOnBieginDrag。しかし、結局問題は中身のような？
+	そこで、つかうのがOnBeginDrag。しかし、結局問題は中身のような？
 	参考：http://qiita.com/ayumegu/items/c07594f408363f73008c */
 
 
@@ -170,9 +173,10 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	// ドラックが開始したとき呼ばれる.
 	// 以下、ドロップされた時の関数も同様だが、ドラッグされている時にはドロップ判定をオフにする。
 
-	public void OnBeginDrag(PointerEventData eventData)
+	public void OnPointerDown(PointerEventData eventData)
 	{
-		onDragging = true;
+		_handDirector.OnPointerDown (this);
+
 	}
 
 	// ドラック中に呼ばれる.
@@ -180,20 +184,45 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	{
 		
 		this.transform.position = eventData.position;
+		// _handDirector.OnPointerDown (this);  値を入れるのは、一箇所（今回なら、Down）だけ。バグが起きた時に原因箇所が特定しづらい。
 
 	}
 
 	// ドラックが終了したとき呼ばれる.
-	public void OnEndDrag(PointerEventData eventData)
+	public void OnPointerUp(PointerEventData eventData)
 	{
-		if (eventData.pointerDrag == null)
-			return;
-			
+		_handDirector.OnPointerUp ();
+
+	}
+
+	public void OnPointerEnter(PointerEventData eventData)
+	{
+		_handDirector.OnPointerEnter (this); // ポインターを合わされた側で呼ばれる関数なので、thisで良い。
+
+	}
+
+	public void OnPointerExit(PointerEventData eventData)
+	{
+		_handDirector.OnPointerExit (this);
+
+	}
+
+
+/* HandDirector側で、OnPointerUpを実装する前の試行錯誤の後。
+
+ 
 		// ドラッグを離した時、HandCardと重なっていたら、
 		// withCard = trueを返す。それによって、Update()からcardgenerator内の合成関数走らせる。
 		if (eventData.pointerEnter.tag == "HandCard") { //pointerEnterはOnPointerEnterが記述されてるオブジェクトが入る
 			withCard = true;
-			handCardId_b = eventData.pointerEnter.GetComponent<HandController>().word_data.id; //pointerEnter.word_data.idではだめ
+			// handCardId_b = eventData.pointerEnter.GetComponent<HandController>().word_data.id; //pointerEnter.word_data.idではだめ
+				// ^ Get and Set Id_b in OnPointerEnter method because this code cause self-Combination when a card distached somewhere.
+
+			// カード合成、また、合成の成否判定をHandDirectorから返してもらう。
+			int comCard = _handDirector.ComCard();
+
+
+
 
 			//その他の条件も記述 フィールド、他のオブジェクトの情報の取り方は保留。
 		//} else if (other.gameObject.tag == "Field") {
@@ -205,17 +234,21 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 		}
 
 		if (withCard) {
-			// まず、関数の引数になるこのカードidを変数に格納
-			string handCardId_a = this.word_data.id;
-			// HandDirector内のComCard()をint型の関数にしてやることで、返り値から条件判定ができる。
-			int comCard = _handDirector.ComCard(handCardId_a, handCardId_b, startPos);
-			if (comCard == -1) {
-				Destroy (eventData.pointerEnter.gameObject);
-				Destroy (this.gameObject);
-			}
-			// withCard = false;  ← いらない。どの(with~)の条件にも当てはまらなければ、startPosに戻る。自動的に、OnTriggerExitでfalseかかる。
+			_handDirector.ComCard ();
+																下のことが、OnBeginDrag(this)で全部の情報をHandDirectorに送って解決した。
+																関数の引数になるこのカードidを変数に格納
+																string handCardId_a = this.word_data.id;
+																// HandDirctor内にidを送る。　// HandDirector内のComCard()をint型の関数にしてやることで、返り値から条件判定ができる。
+																_handDirector.ComCard1(handCardId_a);
+																 
+																				元々は、これでHandDirectorにカードIDを送っていた。int型なのは、合成の成否を数字で返してもらって判定していたため。　int comCard = _handDirector.ComCard(handCardId_a, handCardId_b, startPos);
+																											if (comCard == -1) {
+																																			Destroy (eventData.pointerEnter.gameObject);
+																																			Destroy (this.gameObject);
+																											}
+																											// withCard = false;  ← いらない。どの(with~)の条件にも当てはまらなければ、startPosに戻る。自動的に、OnTriggerExitでfalseかかる。
 
-			transform.position = startPos;
+																											// transform.position = startPos; ここでDestroy処理もしていた頃の名残。
 
 			// とりあえず、withcard以外のRectTransformについては放置
 		} else if (withDeck) {
@@ -237,26 +270,28 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 			//_handDirector.ComObject(startPos);
 			Destroy (this.gameObject);
 
-		} else {
+		} else  {
 			// なんの条件にも当てはまらなければ、カードを初期位置へ
 			// 本当は、動いて戻したい。↓だと、パッと瞬間移動する。
 			// 多分、 speedを定義して、毎フレームそれだけ戻るようにするのだが、、、？
 			transform.position = startPos;
 		}
+*/
 
-		this.transform.position = startPos;
-	}
+		
+
 
 
 	// マウスオーバー、もしくは、ドロップされた時に呼ばれる関数たち
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-		
+		_handDirector.OnPointerEnter (eventData.pointerEnter.gameObject.GetComponent<HandController>());
 	}
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
-		
+		_handDirector.OnPointerExit ();
+
 	}
 	public void OnDrop(PointerEventData eventData)
 	{

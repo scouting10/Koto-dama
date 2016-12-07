@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+//Listの使用に必要
 using System.Collections.Generic;
+using System.Linq;
 
 public class CardGenerator : MonoBehaviour {
 
@@ -9,7 +11,7 @@ public class CardGenerator : MonoBehaviour {
 
 	// Prefabの設定
 	public HandController _handController;
-	public DeckController _deckController;
+	public GameObject _deckPrefab;
 
 	// List変数の宣言
 	private List<WordRawData> wordlist;
@@ -43,12 +45,14 @@ public class CardGenerator : MonoBehaviour {
 
 	}
 
-	public DeckController DeckCreate(){
-		DeckController deck = Instantiate (_deckController);
+	// デッキカードのいちばん上に、「合成防止の蓋」としてのDeckCardを配置する。
+	public GameObject DeckCreate(){
+		GameObject deck = Instantiate (_deckPrefab);
 		deck.transform.SetParent (canvasObject.transform, false);
 		return deck;
 
 	}
+
 
 	public HandController Combination(string id_a, string id_b){
 		for (int i = 0; i < comlist.Count; i++) {

@@ -683,8 +683,7 @@ MonoBehaviour:
   canvasObject: {fileID: 2009443401}
   _handController: {fileID: 114000013354062274, guid: e0fa3f929633140628cc03bafc61d009,
     type: 2}
-  _deckController: {fileID: 114000013059487462, guid: e9c2e08a8bcbf46df809e0a25f04fb3f,
-    type: 2}
+  _deckController: {fileID: 0}
 --- !u!4 &2112263662
 Transform:
   m_ObjectHideFlags: 0
